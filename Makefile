@@ -1,2 +1,4 @@
-build:
-	go build -o sample cmd/sample/main.go
+sample:
+	go build -o $@ cmd/$@/main.go
+test:
+	go test ./...
