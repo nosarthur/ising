@@ -2,14 +2,16 @@ package magnets
 
 import "math/bits"
 
-func (m *ising1d) P() {
+// Probability of the current spin state
+func (m *ising1d) P() float64 {
 
+	return 0
 }
 
 // Magnetization
 func (m *ising1d) M() float64 {
 	// 2*n1 - N
-	return float64(2*bits.OnesCount16(m.spins&m.mask) - int(m.N))
+	return float64(2*bits.OnesCount16(m.spins&m.mask) - int(m.n))
 }
 
 // Return the energy difference to flip the i'th spin
@@ -22,7 +24,7 @@ func (m *ising1d) DeltaE(i uint) float64 {
 func (m *ising1d) E() float64 {
 	// E = -J \sum Si Sj - H \sum Si
 
-	var pair spint
+	var pair Spint
 	var e float64
 	for i := range m.masks1 {
 		// Note here the first pair is spin 1 and spin N
@@ -34,5 +36,5 @@ func (m *ising1d) E() float64 {
 		}
 	}
 	// fmt.Println("e:", e, m.Magnetization())
-	return -(e*m.J + m.H*m.M())
+	return -(e*m.j + m.h*m.M())
 }

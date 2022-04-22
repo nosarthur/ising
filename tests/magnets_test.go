@@ -1,16 +1,17 @@
-package magnets
+package magnets_test
 
 import (
 	"testing"
 
+	"github.com/nosarthur/ising/magnets"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEandM(t *testing.T) {
 	// 10 spins
-	m := New1DIsing(0, 10, 1, 1)
+	m := magnets.New1DIsing(0, 10, 1, 1)
 	cases := []struct {
-		spins  spint
+		spins  magnets.Spint
 		want_m float64
 		want_e float64
 	}{
