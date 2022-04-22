@@ -20,9 +20,9 @@ func TestEandM(t *testing.T) {
 	}
 	for _, c := range cases {
 		m.Set(c.spins)
-		got_m := m.Magnetization()
+		got_m := m.M()
 		assert.InDelta(t, c.want_m, got_m, 0.1)
-		got_e := m.Energy()
+		got_e := m.E()
 		assert.InDelta(t, c.want_e, got_e, 0.1)
 	}
 }
