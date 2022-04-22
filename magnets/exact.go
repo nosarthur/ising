@@ -1,11 +1,13 @@
 package magnets
 
-import "math/bits"
+import (
+	"math"
+	"math/bits"
+)
 
 // Probability of the current spin state
 func (m *ising1d) P() float64 {
-
-	return 0
+	return math.Exp(-m.E()) / m.z
 }
 
 // Magnetization
@@ -35,6 +37,20 @@ func (m *ising1d) E() float64 {
 			e += 1
 		}
 	}
-	// fmt.Println("e:", e, m.Magnetization())
 	return -(e*m.j + m.h*m.M())
+}
+
+// Free energy
+func (m *ising1d) F() float64 {
+	return math.Log(m.z)
+}
+
+// re-compute partition function
+func (m *ising1d) updateZ() {
+	m.z = 0
+	for i := Spint(0); i < m.Bound; i++ {
+		m.Set(i)
+		m.z += math.Exp(-m.E())
+		// fmt.Println("--", i, ':', m.E())
+	}
 }
