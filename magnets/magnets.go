@@ -8,7 +8,7 @@ type Magnet interface {
 	// Step()
 	DeltaE(i uint) float64
 	E() float64
-	M() float64
+	S() float64 // total spin
 	Set(Spint)
 	Show()
 }
@@ -51,7 +51,6 @@ func New1DIsing(N uint, J, H float64) *ising1d {
 		m |= m1[i]
 	}
 	bound := Spint(1) << N
-	fmt.Println("bound", bound)
 	// -J \sum Si Sj
 	var de_table [8]float64
 	tmp := 4 * J

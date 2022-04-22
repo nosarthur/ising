@@ -12,7 +12,7 @@ func TestEandM(t *testing.T) {
 	m := magnets.New1DIsing(10, 1, 1)
 	cases := []struct {
 		spins  magnets.Spint
-		want_m float64
+		want_s float64
 		want_e float64
 	}{
 		{0, -10, 0},
@@ -21,8 +21,8 @@ func TestEandM(t *testing.T) {
 	}
 	for _, c := range cases {
 		m.Set(c.spins)
-		got_m := m.M()
-		assert.InDelta(t, c.want_m, got_m, 0.1)
+		got_s := m.S()
+		assert.InDelta(t, c.want_s, got_s, 0.1)
 		got_e := m.E()
 		assert.InDelta(t, c.want_e, got_e, 0.1)
 	}

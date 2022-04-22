@@ -10,8 +10,8 @@ func (m *ising1d) P() float64 {
 	return math.Exp(-m.E()) / m.z
 }
 
-// Magnetization
-func (m *ising1d) M() float64 {
+// Magnetization of the current spin state
+func (m *ising1d) S() float64 {
 	// 2*n1 - N
 	return float64(2*bits.OnesCount16(m.spins&m.mask) - int(m.n))
 }
@@ -22,27 +22,44 @@ func (m *ising1d) DeltaE(i uint) float64 {
 	return 0
 }
 
-// Energy
+// Energy of the current spin state
 func (m *ising1d) E() float64 {
 	// E = -J \sum Si Sj - H \sum Si
-
 	var pair Spint
-	var e float64
+	var ess float64
 	for i := range m.masks1 {
 		// Note here the first pair is spin 1 and spin N
 		pair = (m.spins & m.masks2[i]) >> i
 		if pair == 1 || pair == 2 {
-			e -= 1
+			ess -= 1
 		} else {
-			e += 1
+			ess += 1
 		}
 	}
-	return -(e*m.j + m.h*m.M())
+	return -(ess*m.j + m.h*m.S())
 }
 
 // Free energy
 func (m *ising1d) F() float64 {
-	return math.Log(m.z)
+	return -math.Log(m.z)
+}
+
+// Magnetization
+func (m *ising1d) M() (s float64) {
+	for i := Spint(0); i < m.Bound; i++ {
+		m.Set(i)
+		s += m.P() * m.S()
+	}
+	return
+}
+
+// Internal energy
+func (m *ising1d) U() (u float64) {
+	for i := Spint(0); i < m.Bound; i++ {
+		m.Set(i)
+		u += m.P() * m.E()
+	}
+	return
 }
 
 // re-compute partition function
