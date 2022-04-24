@@ -5,6 +5,11 @@ import (
 	"math/bits"
 )
 
+// Number of spins
+func (m *ising1d) N() uint {
+	return m.n
+}
+
 // Probability of the current spin state
 func (m *ising1d) P() float64 {
 	return math.Exp(-m.E()) / m.z
@@ -14,12 +19,6 @@ func (m *ising1d) P() float64 {
 func (m *ising1d) S() float64 {
 	// 2*n1 - N
 	return float64(2*bits.OnesCount16(m.spins&m.mask) - int(m.n))
-}
-
-// Return the energy difference to flip the i'th spin
-func (m *ising1d) DeltaE(i uint) float64 {
-	// idx + 1 % N == i
-	return 0
 }
 
 // Energy of the current spin state
@@ -63,11 +62,11 @@ func (m *ising1d) U() (u float64) {
 }
 
 // re-compute partition function
+// It has side effect of setting all spins to 1
 func (m *ising1d) updateZ() {
 	m.z = 0
 	for i := Spint(0); i < m.Bound; i++ {
 		m.Set(i)
 		m.z += math.Exp(-m.E())
-		// fmt.Println("--", i, ':', m.E())
 	}
 }
