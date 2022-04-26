@@ -13,9 +13,9 @@ import (
 )
 
 type Params struct {
-	NSpins uint
-	J, H   float64
-	NSteps uint
+	NSpins, NSteps uint
+	J, H           float64
+	NToss, NRun    uint
 }
 
 func main() {
@@ -28,26 +28,32 @@ func main() {
 		p.Fail("Input yaml file is needed.")
 	}
 
-	yfile, err := ioutil.ReadFile(args.Input)
-
+	b, err := ioutil.ReadFile(args.Input)
 	if err != nil {
-		p.Fail("Fail to read input file")
+		p.Fail("Fail to read input yaml file")
 
 	}
 	params := Params{}
-	err = yaml.Unmarshal(yfile, &params)
+	err = yaml.Unmarshal(b, &params)
 	if err != nil {
 		p.Fail("Fail to parse input yaml file")
 	}
 
-	J := 2.
-	m := magnets.New1DIsing(10, J, 1)
-	fmt.Println("F U TS:", m.F(), m.U(), m.U()-m.F())
+	m := magnets.New1DIsing(params.NSpins, params.J, params.H)
+	fmt.Println("exact F U TS:", m.F(), m.U(), m.U()-m.F())
 	fmt.Println("M:", m.M())
 	m.Show()
 
-	// return
-	// time evolution
+	// Monte Carlo sweeps
+	got := magnets.Monte(m, params.NSteps)
+
+	// save
+	spinOut, err := os.Create(args.Output)
+	if err != nil {
+		p.Fail("Unable to open output file for spin configurations")
+	}
+	defer spinOut.Close()
+
 	csvOut, err := os.Create(args.Output)
 	if err != nil {
 		p.Fail("Unable to open output file")
@@ -57,7 +63,6 @@ func main() {
 	w.Comma = '\t'
 	defer w.Flush()
 
-	got := magnets.Monte(m, 1000)
 	if err := w.Write([]string{"Index", "Energy", "Magnetization"}); err != nil {
 		p.Fail("Cannot write to file")
 	}

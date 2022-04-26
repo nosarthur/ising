@@ -1,6 +1,6 @@
-NSpins: 10
-J: 2
-H: 1
-NSteps: 2000
-Ntoss: 0
-Nrun: 10
+nspins: 10
+nsteps: 2000
+h: 1
+j: 2
+ntoss: 0
+nrun: 10
