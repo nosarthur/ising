@@ -34,3 +34,12 @@ func (m *ising1d) TryFlip(i uint, rnd float64) {
 		}
 	}
 }
+
+// Compute expectation value from a sample
+func Estimate(f func(Magnet) float64, sample []Spint, m Magnet) (est float64) {
+	for i := range sample {
+		m.SetRaw(sample[i])
+		est += f(m)
+	}
+	return
+}

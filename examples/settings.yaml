@@ -1,6 +1,6 @@
-Nspin: 10
-J: 1
+NSpins: 10
+J: 2
 H: 1
-Nsamples: 1000
-Ntoss: 100
+NSteps: 2000
+Ntoss: 0
 Nrun: 10

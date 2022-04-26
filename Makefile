@@ -3,7 +3,7 @@
 run:
 	go run cmd/sample/main.go
 
-sample:
+sample process:
 	go build -o $@ cmd/$@/main.go
 
 test:
