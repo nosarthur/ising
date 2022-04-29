@@ -9,7 +9,7 @@ import (
 	"os"
 	"strconv"
 
-	arg "github.com/alexflint/go-arg"
+	"github.com/alexflint/go-arg"
 	"github.com/nosarthur/ising/magnets"
 	"gopkg.in/yaml.v3"
 )
@@ -17,7 +17,7 @@ import (
 func main() {
 	var args struct {
 		Input  string `arg:"positional" help:"Input Yaml file"`
-		Output string `arg:"positional" default:"out.dat"`
+		Output string `arg:"positional" default:"props.txt"`
 	}
 	p := arg.MustParse(&args)
 	if args.Input == "" {
@@ -26,7 +26,7 @@ func main() {
 
 	b, err := ioutil.ReadFile(args.Input)
 	if err != nil {
-		p.Fail("Fail to read input yaml file")
+		p.Fail("Fail to read input yaml data file")
 
 	}
 	params := magnets.Params{}
@@ -34,22 +34,16 @@ func main() {
 	if err != nil {
 		p.Fail("Fail to parse input yaml file")
 	}
+	fmt.Println(params)
 
-	m := magnets.New1DIsing(params.NSpins, params.J, params.H)
-	m.Show()
-
-	// Monte Carlo sweeps
-	got := magnets.Monte(m, params.NSteps)
-
-	// save spin configurations
-	buf := new(bytes.Buffer)
-	err = binary.Write(buf, binary.LittleEndian, got)
+	b, err = ioutil.ReadFile("sweeps.dat")
 	if err != nil {
-		fmt.Println("binary.Write failed:", err)
+		p.Fail("Fail to read input spin data file")
 	}
-
-	if err = os.WriteFile("sweeps.dat", buf.Bytes(), 0666); err != nil {
-		p.Fail("Fail to write spin configurations to file")
+	r := bytes.NewReader(b)
+	spinConfigs := make([]magnets.Spint, params.NSteps)
+	if err := binary.Read(r, binary.LittleEndian, &spinConfigs); err != nil {
+		p.Fail("binary.Read failed:")
 	}
 
 	// save properties
@@ -62,16 +56,15 @@ func main() {
 	w.Comma = '\t'
 	defer w.Flush()
 
-	if err := w.Write([]string{"Index", "Energy", "Magnetization"}); err != nil {
-		p.Fail("Cannot write to file")
-	}
-	for i := range got {
-		m.SetRaw(got[i])
+	m := magnets.New1DIsing(params.NSpins, params.J, params.H)
+	for i := range spinConfigs {
+		m.SetRaw(spinConfigs[i])
 		e := strconv.FormatFloat(m.E(), 'f', 2, 64)
 		m := strconv.FormatFloat(m.S(), 'f', 2, 64)
 		if err := w.Write([]string{strconv.Itoa(i), e, m}); err != nil {
 			p.Fail("Cannot write to file")
 		}
+
 	}
 	fmt.Println("Write to", args.Output)
 }

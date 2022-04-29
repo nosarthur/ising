@@ -8,6 +8,7 @@
 sample
 process
 exact
+analyze
 
 # Data
 *.dat
