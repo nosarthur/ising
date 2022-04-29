@@ -8,18 +8,20 @@ import (
 )
 
 func TestEandM(t *testing.T) {
-	// 10 spins
-	m := magnets.New1DIsing(10, 1, 1)
+	// 10 spins, H=1
 	cases := []struct {
+		J      float64
 		spins  magnets.Spint
 		want_s float64
 		want_e float64
 	}{
-		{0, -10, 0},
-		{3, -6, 0},
-		{5, -6, 4},
+		{1, 0, -10, 0},
+		{1, 3, -6, 0},
+		{1, 5, -6, 4},
+		{2, 1, -8, -4},
 	}
 	for _, c := range cases {
+		m := magnets.New1DIsing(10, c.J, 1)
 		m.Set(c.spins)
 		got_s := m.S()
 		assert.InDelta(t, c.want_s, got_s, 0.1)

@@ -3,7 +3,8 @@
 run:
 	go run cmd/sample/main.go
 
-sample process:
+.SECONDEXPANSION:
+sample process exact: cmd/$$@/main.go
 	go build -o $@ cmd/$@/main.go
 
 test:

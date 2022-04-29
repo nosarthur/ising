@@ -4,8 +4,10 @@
 *.dll
 *.so
 *.dylib
+*.log
 sample
 process
+exact
 
 # Data
 *.dat
