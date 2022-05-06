@@ -16,6 +16,12 @@ $$
 1. sample more than 2 ensembles
 
 
+## commands
+
+- sample:
+- exact:
+- analyze: get averages and standard deviations from an ensemble
+
 ## TODO
 
 [] implement BAR

@@ -36,7 +36,7 @@ func main() {
 	}
 
 	m := magnets.New1DIsing(params.NSpins, params.J, params.H)
-	m.Show()
+	fmt.Println(m)
 
 	// Monte Carlo sweeps
 	got := magnets.Monte(m, params.NSteps)

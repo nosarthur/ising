@@ -1,9 +1,11 @@
+// Package magnets implements Ising spin models
 package magnets
 
 import (
 	"fmt"
 )
 
+//
 type Magnet interface {
 	TryFlip(uint, float64)
 	E() float64
@@ -11,8 +13,7 @@ type Magnet interface {
 	N() uint    // number of spins
 	Set(Spint)
 	SetRaw(Spint)
-	GetRaw() Spint
-	Show()
+	Raw() Spint
 }
 
 // 1D Ising magnet with PBC
@@ -85,10 +86,11 @@ func (m *ising1d) Set(spins Spint) {
 }
 
 // Show spin state and system parameters
-func (m *ising1d) Show() {
+func (m *ising1d) String() string {
 	// TODO: show all spins
-	fmt.Printf("%d spins: %b\n", m.n, (m.spins&m.mask)>>1)
-	fmt.Printf("J: %0.2f, H: %0.2f\n", m.j, m.h)
+	spin := (m.spins & m.mask) >> 1
+	return fmt.Sprintf("%d spins: %b; J=%0.2f, H=%0.2f\n",
+		m.n, spin, m.j, m.h)
 }
 
 // Set raw spin state
@@ -96,6 +98,7 @@ func (m *ising1d) SetRaw(spins Spint) {
 	m.spins = spins
 }
 
-func (m *ising1d) GetRaw() Spint {
+// Get raw spin state
+func (m *ising1d) Raw() Spint {
 	return m.spins
 }

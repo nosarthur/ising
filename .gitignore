@@ -5,6 +5,7 @@
 *.so
 *.dylib
 *.log
+*.txt
 sample
 process
 exact

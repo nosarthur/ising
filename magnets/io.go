@@ -10,6 +10,6 @@ type Params struct {
 }
 
 func (p Params) String() string {
-	return fmt.Sprintf("NSpins=%v, NSteps=%v, J=%v, H=%v",
+	return fmt.Sprintf("NSpins=%v, NSteps=%v, J=%v, H=%v\n",
 		p.NSpins, p.NSteps, p.J, p.H)
 }

@@ -14,7 +14,7 @@ func Monte(m Magnet, nMC uint) []Spint {
 			m.TryFlip(j, rand.Float64())
 		}
 		// after one sweep
-		samples[i] = m.GetRaw()
+		samples[i] = m.Raw()
 	}
 	return samples
 }
@@ -36,10 +36,16 @@ func (m *ising1d) TryFlip(i uint, rnd float64) {
 }
 
 // Compute expectation value from a sample
-func Estimate(f func(Magnet) float64, sample []Spint, m Magnet) (est float64) {
+func Estimate(f func(Magnet) float64, sample []Spint, m Magnet) (avg, std float64) {
+	var o2 float64
 	for i := range sample {
 		m.SetRaw(sample[i])
-		est += f(m)
+		o := f(m)
+		avg += o
+		o2 += o * o
 	}
+	n := float64(len(sample))
+	avg /= n
+	std = math.Sqrt((o2/n - avg*avg) / (n - 1))
 	return
 }
