@@ -1,6 +1,6 @@
 .PHONY: test all
 
-scripts:=sample exact analyze
+scripts:=sample analyze
 
 
 all: $(scripts)

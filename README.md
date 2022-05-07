@@ -24,4 +24,4 @@ $$
 
 ## TODO
 
-[] implement BAR
+- [  ] implement BAR
