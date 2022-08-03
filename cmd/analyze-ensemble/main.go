@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"encoding/csv"
 	"fmt"
-	"io/ioutil"
 	"math"
 	"os"
 	"strconv"
@@ -30,7 +29,7 @@ func main() {
 
 	p := arg.MustParse(&args)
 
-	b, err := ioutil.ReadFile(args.Yaml)
+	b, err := os.ReadFile(args.Yaml)
 	if err != nil {
 		p.Fail("Fail to read input yaml data file")
 
@@ -42,7 +41,7 @@ func main() {
 	}
 	fmt.Println(params)
 
-	b, err = ioutil.ReadFile(args.MCInput)
+	b, err = os.ReadFile(args.MCInput)
 	if err != nil {
 		p.Fail("Fail to read input spin data file")
 	}
@@ -75,15 +74,26 @@ func main() {
 	fmt.Println("Write to", args.Output)
 
 	// statistics
+	fmt.Println("direct calculations")
 	toCompute := []func(magnets.Magnet) float64{
-		func(m magnets.Magnet) float64 { return m.S() },
-		func(m magnets.Magnet) float64 { return m.E() },
 		func(m magnets.Magnet) float64 { return math.Exp(-m.E()) },
+		// func(m magnets.Magnet) float64 { return m.S() },
+		func(m magnets.Magnet) float64 { return m.E() },
 	}
 	for i := range toCompute {
 		f := toCompute[i]
 		m, dm := magnets.Estimate(f, rawSpinConfigs, mag)
-		fmt.Printf("%v +- %v\n", m, dm)
+		if i == 0 {
+			// free energy
+			fmt.Printf("%v +- \n", -math.Log(m))
+		} else {
+			// observables
+			fmt.Printf("%v +- %v\n", m, dm)
+		}
+
 	}
 
+	fmt.Println("FEP calculations")
+	mag_ := magnets.New1DIsing(params.NSpins, -params.J, params.H)
+	fmt.Println(magnets.Zwanzig(mag_, mag, rawSpinConfigs))
 }

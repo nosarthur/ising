@@ -1,16 +1,10 @@
-.PHONY: test all
+.PHONY: test install
 
-scripts:=sample analyze
+install:
+	go install ./...
 
-
-all: $(scripts)
-
-run:
-	go run cmd/sample/main.go
-
-.SECONDEXPANSION:
-$(scripts): cmd/$$@/main.go
-	go build -o $@ cmd/$@/main.go
+update:
+	go mod tidy
 
 test:
 	go test ./...tests

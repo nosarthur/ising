@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"encoding/csv"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 
@@ -17,14 +16,14 @@ import (
 func main() {
 	var args struct {
 		Input  string `arg:"positional" help:"Input Yaml file"`
-		Output string `arg:"positional" default:"out.dat" help:"Output raw spin states"`
+		Output string `arg:"positional" default:"ensemble.dat" help:"Output raw spin states"`
 	}
 	p := arg.MustParse(&args)
 	if args.Input == "" {
 		p.Fail("Input yaml file is needed.")
 	}
 
-	b, err := ioutil.ReadFile(args.Input)
+	b, err := os.ReadFile(args.Input)
 	if err != nil {
 		p.Fail("Fail to read input yaml file")
 
@@ -34,6 +33,7 @@ func main() {
 	if err != nil {
 		p.Fail("Fail to parse input yaml file")
 	}
+	fmt.Println(params)
 
 	m := magnets.New1DIsing(params.NSpins, params.J, params.H)
 	fmt.Println(m)

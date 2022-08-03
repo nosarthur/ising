@@ -70,3 +70,41 @@ func (m *ising1d) updateZ() {
 		m.z += math.Exp(-m.E())
 	}
 }
+
+// Compute expectation value from a sample
+func Estimate(f func(Magnet) float64, sample []Spint, m Magnet) (avg, std float64) {
+	var o2 float64
+	for i := range sample {
+		m.SetRaw(sample[i])
+		o := f(m)
+		avg += o
+		o2 += o * o
+	}
+	n := float64(len(sample))
+	avg /= n
+	std = math.Sqrt((o2/n - avg*avg) / (n - 1))
+	return
+}
+
+// Compute free energy expectation value from a sample drawn on system 1
+// using Zwanzig relation
+func Zwanzig(m0 Magnet, m1 Magnet, sample1 []Spint) (avg, std float64) {
+	f := func(m0 Magnet, m1 Magnet) float64 {
+		return math.Exp(m1.E() - m0.E())
+	}
+	var o, o2 float64
+	for i := range sample1 {
+		m0.SetRaw(sample1[i])
+		m1.SetRaw(sample1[i])
+		o = f(m0, m1)
+		avg += o
+		o2 += o * o
+	}
+	n := float64(len(sample1))
+	avg /= n
+	// println("avg", avg)
+	avg = -math.Log(avg)
+	//TODO: error propagation of the log is not done
+	std = math.Sqrt((o2/n - avg*avg) / (n - 1))
+	return
+}

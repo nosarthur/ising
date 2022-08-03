@@ -18,10 +18,9 @@ $$
 
 ## commands
 
-- sample:
-- exact:
-- analyze: get averages and standard deviations from an ensemble
+- sample-ising:
+- analyze-ensemble: get averages and standard deviations from an ensemble
 
 ## TODO
 
-- [  ] implement BAR
+- [ ] implement BAR
